@@ -18,6 +18,27 @@ const shiftsValue = document.getElementById("shiftsValue");
 
 let activeAnimationFrame = null;
 
+function triggerHaptic(strength = 12) {
+  if (typeof navigator.vibrate === "function") {
+    navigator.vibrate(strength);
+  }
+}
+
+function addButtonFeedback(button) {
+  button.addEventListener("click", () => {
+    triggerHaptic(10);
+    button.classList.remove("btn-pop");
+    void button.offsetWidth;
+    button.classList.add("btn-pop");
+  });
+}
+
+function animateViewIn(element) {
+  element.classList.remove("view-enter");
+  void element.offsetWidth;
+  element.classList.add("view-enter");
+}
+
 function formatNumber(value) {
   return new Intl.NumberFormat("it-IT", {
     minimumFractionDigits: 2,
@@ -71,6 +92,7 @@ function loadSettingsIntoInputs() {
 
 function openSettingsModal() {
   settingsModal.classList.remove("hidden");
+  animateViewIn(settingsModal.querySelector(".modal-card"));
 }
 
 function closeSettingsModal() {
@@ -126,6 +148,7 @@ function calculateAndAnimate() {
 
   inputSection.classList.add("hidden");
   animationSection.classList.remove("hidden");
+  animateViewIn(animationSection);
   shiftsResult.classList.remove("show");
   hoursValue.textContent = "0,00";
   shiftsValue.textContent = roundedUpShifts;
@@ -143,6 +166,7 @@ function resetView() {
 
   animationSection.classList.add("hidden");
   inputSection.classList.remove("hidden");
+  animateViewIn(inputSection);
   shiftsResult.classList.remove("show");
   targetAmountInput.value = "";
   targetAmountInput.focus();
@@ -163,5 +187,13 @@ targetAmountInput.addEventListener("keydown", (event) => {
     calculateAndAnimate();
   }
 });
+
+[
+  settingsToggleBtn,
+  closeSettingsBtn,
+  saveSettingsBtn,
+  calculateBtn,
+  resetBtn,
+].forEach(addButtonFeedback);
 
 loadSettingsIntoInputs();

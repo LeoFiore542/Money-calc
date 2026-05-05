@@ -28,7 +28,7 @@ body {
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   background: radial-gradient(circle at top, #dbeafe 0%, var(--bg) 45%);
   color: var(--text);
-  min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
   place-items: center;
   padding: 1.2rem;
@@ -41,6 +41,7 @@ body {
   border-radius: 20px;
   padding: 1.25rem 1.25rem 1.5rem;
   box-shadow: 0 22px 45px rgba(0, 0, 0, 0.12);
+  transition: box-shadow 260ms ease, transform 260ms ease;
 }
 
 .topbar {
@@ -64,7 +65,11 @@ body {
   height: 42px;
   font-size: 1.2rem;
   cursor: pointer;
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease;
+}
+
+.icon-btn:active {
+  transform: scale(0.93);
 }
 
 .icon-btn:hover {
@@ -115,6 +120,7 @@ body {
   text-align: left;
   background: transparent;
   color: inherit;
+  transition: border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
 }
 
 .amount-input:focus {
@@ -134,6 +140,17 @@ body {
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
+  transition: transform 150ms ease, filter 180ms ease, box-shadow 180ms ease;
+}
+
+.primary-btn:hover,
+.ghost-btn:hover {
+  filter: brightness(1.05);
+}
+
+.primary-btn:active,
+.ghost-btn:active {
+  transform: scale(0.97);
 }
 
 .ghost-btn {
@@ -156,6 +173,14 @@ body {
 
 .shifts-result.show {
   animation: fade-up 700ms ease forwards;
+}
+
+.view-enter {
+  animation: section-in 360ms ease both;
+}
+
+.btn-pop {
+  animation: btn-pop 220ms ease;
 }
 
 .shifts-value {
@@ -231,5 +256,125 @@ input {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes section-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes btn-pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.94);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 0.7rem;
+    align-items: stretch;
+  }
+
+  .app {
+    width: 100%;
+    min-height: calc(100dvh - 1.4rem);
+    border-radius: 16px;
+    padding: 0.95rem 0.9rem 1.15rem;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+  }
+
+  .topbar {
+    margin-bottom: 0.7rem;
+  }
+
+  .topbar h1 {
+    font-size: 1.15rem;
+  }
+
+  .icon-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.12rem;
+  }
+
+  .input-section,
+  .animation-section {
+    min-height: 62dvh;
+    gap: 0.85rem;
+    padding: 0.5rem 0 0;
+  }
+
+  .hint {
+    font-size: 0.9rem;
+  }
+
+  .amount-wrap {
+    width: 100%;
+  }
+
+  .euro-symbol {
+    left: 14px;
+    font-size: 1.9rem;
+  }
+
+  .amount-input {
+    border-radius: 14px;
+    padding: 0.95rem 0.85rem 0.95rem 2.9rem;
+    font-size: clamp(1.7rem, 11vw, 2.7rem);
+  }
+
+  .primary-btn,
+  .ghost-btn {
+    width: 100%;
+    padding: 0.84rem 0.9rem;
+    font-size: 1rem;
+  }
+
+  .hours-value {
+    font-size: clamp(2rem, 14vw, 3.3rem);
+  }
+
+  .shifts-value {
+    font-size: clamp(1.7rem, 10vw, 2.4rem);
+  }
+
+  .modal {
+    align-items: end;
+    padding: 0.55rem;
+  }
+
+  .modal-card {
+    width: 100%;
+    border-radius: 16px;
+    padding: 0.95rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .topbar h1 {
+    font-size: 1.05rem;
+  }
+
+  .euro-symbol {
+    left: 12px;
+    font-size: 1.65rem;
+  }
+
+  .amount-input {
+    padding-left: 2.55rem;
+    font-size: clamp(1.45rem, 10vw, 2rem);
   }
 }
