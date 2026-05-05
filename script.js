@@ -1,8 +1,10 @@
 const STORAGE_KEY = "money-calc-settings";
+const APP_VERSION = "v1.0.4";
 
 const settingsModal = document.getElementById("settingsModal");
 const settingsToggleBtn = document.getElementById("settingsToggleBtn");
 const closeSettingsBtn = document.getElementById("closeSettingsBtn");
+const versionIndicator = document.getElementById("versionIndicator");
 const hourlyRateInput = document.getElementById("hourlyRate");
 const shiftHoursInput = document.getElementById("shiftHours");
 const inputSection = document.getElementById("inputSection");
@@ -197,3 +199,4 @@ targetAmountInput.addEventListener("keydown", (event) => {
 ].forEach(addButtonFeedback);
 
 loadSettingsIntoInputs();
+versionIndicator.textContent = APP_VERSION;
