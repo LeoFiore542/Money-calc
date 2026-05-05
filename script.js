@@ -1,6 +1,8 @@
 const STORAGE_KEY = "money-calc-settings";
-const APP_VERSION = "v1.0.4";
+const APP_VERSION = "v1.0.5";
+const INTRO_DURATION_MS = 1100;
 
+const introSplash = document.getElementById("introSplash");
 const settingsModal = document.getElementById("settingsModal");
 const settingsToggleBtn = document.getElementById("settingsToggleBtn");
 const closeSettingsBtn = document.getElementById("closeSettingsBtn");
@@ -19,6 +21,28 @@ const shiftsResult = document.getElementById("shiftsResult");
 const shiftsValue = document.getElementById("shiftsValue");
 
 let activeAnimationFrame = null;
+
+function playIntroSplash() {
+  if (!introSplash) {
+    return;
+  }
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduceMotion) {
+    introSplash.classList.add("hide");
+    window.setTimeout(() => {
+      introSplash.remove();
+    }, 430);
+    return;
+  }
+
+  window.setTimeout(() => {
+    introSplash.classList.add("hide");
+    window.setTimeout(() => {
+      introSplash.remove();
+    }, 430);
+  }, INTRO_DURATION_MS);
+}
 
 function triggerHaptic(strength = 12) {
   if (typeof navigator.vibrate === "function") {
@@ -200,3 +224,4 @@ targetAmountInput.addEventListener("keydown", (event) => {
 
 loadSettingsIntoInputs();
 versionIndicator.textContent = APP_VERSION;
+playIntroSplash();
