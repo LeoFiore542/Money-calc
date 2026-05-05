@@ -1,12 +1,22 @@
 const STORAGE_KEY = "money-calc-settings";
 
+const settingsModal = document.getElementById("settingsModal");
+const settingsToggleBtn = document.getElementById("settingsToggleBtn");
+const closeSettingsBtn = document.getElementById("closeSettingsBtn");
 const hourlyRateInput = document.getElementById("hourlyRate");
 const shiftHoursInput = document.getElementById("shiftHours");
+const inputSection = document.getElementById("inputSection");
+const animationSection = document.getElementById("animationSection");
 const targetAmountInput = document.getElementById("targetAmount");
 const saveSettingsBtn = document.getElementById("saveSettingsBtn");
 const calculateBtn = document.getElementById("calculateBtn");
+const resetBtn = document.getElementById("resetBtn");
 const settingsStatus = document.getElementById("settingsStatus");
-const resultBox = document.getElementById("result");
+const hoursValue = document.getElementById("hoursValue");
+const shiftsResult = document.getElementById("shiftsResult");
+const shiftsValue = document.getElementById("shiftsValue");
+
+let activeAnimationFrame = null;
 
 function formatNumber(value) {
   return new Intl.NumberFormat("it-IT", {
@@ -45,6 +55,7 @@ function saveSettings() {
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify({ hourlyRate, shiftHours }));
   settingsStatus.textContent = "Impostazioni salvate.";
+  closeSettingsModal();
 }
 
 function loadSettingsIntoInputs() {
@@ -58,34 +69,99 @@ function loadSettingsIntoInputs() {
   settingsStatus.textContent = "Impostazioni caricate automaticamente.";
 }
 
-function calculate() {
+function openSettingsModal() {
+  settingsModal.classList.remove("hidden");
+}
+
+function closeSettingsModal() {
+  settingsModal.classList.add("hidden");
+}
+
+function animateHours(targetHours, onDone) {
+  if (activeAnimationFrame) {
+    cancelAnimationFrame(activeAnimationFrame);
+    activeAnimationFrame = null;
+  }
+
+  const duration = 2000;
+  const start = performance.now();
+
+  function tick(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = targetHours * eased;
+
+    hoursValue.textContent = formatNumber(current);
+
+    if (progress < 1) {
+      activeAnimationFrame = requestAnimationFrame(tick);
+      return;
+    }
+
+    activeAnimationFrame = null;
+    onDone();
+  }
+
+  activeAnimationFrame = requestAnimationFrame(tick);
+}
+
+function calculateAndAnimate() {
   const settings = readSettings();
   if (!settings) {
-    resultBox.innerHTML = "<p>Salva prima le impostazioni di salario e turno.</p>";
+    settingsStatus.textContent = "Apri la rotellina e salva prima le impostazioni.";
+    openSettingsModal();
     return;
   }
 
   const targetAmount = Number(targetAmountInput.value);
   if (targetAmount <= 0) {
-    resultBox.innerHTML = "<p>Inserisci un importo valido maggiore di 0.</p>";
+    targetAmountInput.focus();
     return;
   }
 
   const hoursNeeded = targetAmount / settings.hourlyRate;
   const shiftsNeeded = hoursNeeded / settings.shiftHours;
-  const fullShifts = Math.floor(shiftsNeeded);
-  const remainingHours = hoursNeeded - fullShifts * settings.shiftHours;
+  const roundedUpShifts = Math.ceil(shiftsNeeded);
 
-  resultBox.innerHTML = `
-    <p><strong>${formatNumber(targetAmount)} €</strong> richiedono:</p>
-    <p>- <strong>${formatNumber(hoursNeeded)}</strong> ore di lavoro</p>
-    <p>- <strong>${formatNumber(shiftsNeeded)}</strong> turni (da ${settings.shiftHours} ore)</p>
-    <p class="small">
-      Equivalente pratico: ${fullShifts} turni completi + ${formatNumber(remainingHours)} ore.
-    </p>
-  `;
+  inputSection.classList.add("hidden");
+  animationSection.classList.remove("hidden");
+  shiftsResult.classList.remove("show");
+  hoursValue.textContent = "0,00";
+  shiftsValue.textContent = roundedUpShifts;
+
+  animateHours(hoursNeeded, () => {
+    shiftsResult.classList.add("show");
+  });
 }
 
+function resetView() {
+  if (activeAnimationFrame) {
+    cancelAnimationFrame(activeAnimationFrame);
+    activeAnimationFrame = null;
+  }
+
+  animationSection.classList.add("hidden");
+  inputSection.classList.remove("hidden");
+  shiftsResult.classList.remove("show");
+  targetAmountInput.value = "";
+  targetAmountInput.focus();
+}
+
+settingsToggleBtn.addEventListener("click", openSettingsModal);
+closeSettingsBtn.addEventListener("click", closeSettingsModal);
+settingsModal.addEventListener("click", (event) => {
+  if (event.target === settingsModal) {
+    closeSettingsModal();
+  }
+});
 saveSettingsBtn.addEventListener("click", saveSettings);
-calculateBtn.addEventListener("click", calculate);
+calculateBtn.addEventListener("click", calculateAndAnimate);
+resetBtn.addEventListener("click", resetView);
+targetAmountInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    calculateAndAnimate();
+  }
+});
+
 loadSettingsIntoInputs();
