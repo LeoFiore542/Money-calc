@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calcolatore Ore e Turni</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <h1>Calcolatore Ore e Turni</h1>
+
+      <div class="grid">
+        <section class="section">
+          <h2>Impostazioni</h2>
+          <label for="hourlyRate">Salario orario (€)</label>
+          <input id="hourlyRate" type="number" min="0" step="0.01" placeholder="Es. 12.50" />
+
+          <label for="shiftHours">Durata turno (ore)</label>
+          <input id="shiftHours" type="number" min="0" step="0.1" placeholder="Es. 8" />
+
+          <button id="saveSettingsBtn" type="button">Salva impostazioni</button>
+          <p id="settingsStatus" class="small"></p>
+        </section>
+
+        <section class="section">
+          <h2>Calcolo</h2>
+          <label for="targetAmount">Importo da raggiungere (€)</label>
+          <input id="targetAmount" type="number" min="0" step="0.01" placeholder="Es. 500" />
+
+          <button id="calculateBtn" type="button">Calcola ore e turni</button>
+        </section>
+      </div>
+
+      <section class="result" id="result">
+        <p>Inserisci i dati per vedere il risultato.</p>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
