@@ -244,6 +244,12 @@ input {
   color: var(--muted);
 }
 
+#saveSettingsBtn {
+  width: min(240px, 100%);
+  margin: 1rem auto 0;
+  display: block;
+}
+
 .version-indicator {
   position: fixed;
   left: 0.75rem;
@@ -382,6 +388,11 @@ input {
     left: 0.55rem;
     bottom: 0.45rem;
     font-size: 0.72rem;
+  }
+
+  #saveSettingsBtn {
+    width: 100%;
+    margin-top: 0.95rem;
   }
 }
 
